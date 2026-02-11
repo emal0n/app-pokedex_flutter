@@ -6,6 +6,12 @@
 [![Repository](https://img.shields.io/badge/Repository-GitHub-black.svg)](https://github.com/emal0n/app-pokedex_flutter)
 [![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)](#)
 
+## Status CI/CD
+
+[![CI - Build and Test](https://github.com/emal0n/app-pokedex_flutter/workflows/CI%20-%20Build%20and%20Test/badge.svg)](https://github.com/emal0n/app-pokedex_flutter/actions)
+[![Android Release](https://github.com/emal0n/app-pokedex_flutter/workflows/Android%20Release%20Build/badge.svg)](https://github.com/emal0n/app-pokedex_flutter/actions)
+[![Code Quality](https://github.com/emal0n/app-pokedex_flutter/workflows/Code%20Quality%20&%20Security/badge.svg)](https://github.com/emal0n/app-pokedex_flutter/actions)
+
 Um aplicativo Flutter elegante e interativo para explorar e descobrir informações sobre Pokémon usando a PokéAPI.
 
 **Repositório GitHub:** [https://github.com/emal0n/app-pokedex_flutter](https://github.com/emal0n/app-pokedex_flutter)
@@ -184,6 +190,62 @@ O projeto segue uma arquitetura clean com separação de responsabilidades:
 - Repository Pattern para acesso a dados
 - Widget Composition para componentes reutilizáveis
 - Material Design 3
+
+---
+
+## CI/CD e Automação
+
+Este projeto utiliza GitHub Actions para automação de build, testes e deploy.
+
+### Workflows Configurados
+
+#### 1. **CI - Build and Test**
+- ✅ Executa em cada push e pull request
+- 🔍 Verifica formatação e análise de código
+- 🧪 Executa testes automatizados
+- 📦 Gera APK de debug
+
+#### 2. **Android Release Build**
+- 📱 Gera APK e App Bundle de release
+- 🎉 Cria releases automáticos no GitHub
+- 📤 Disponibiliza artefatos para download
+
+#### 3. **iOS Release Build**
+- 🍎 Gera build iOS para distribuição
+- 📦 Cria arquivo de build
+
+#### 4. **Code Quality & Security**
+- 🔍 Análise de qualidade de código
+- 🔒 Verificação de segurança de dependências
+- 📊 Relatórios de cobertura de testes
+
+#### 5. **PR Checks**
+- ✅ Validação automática de Pull Requests
+- 💬 Comentários com resultados dos testes
+- 📊 Relatório de tamanho do APK
+
+#### 6. **Dependency Updates**
+- 🔄 Atualização automática semanal de dependências
+- 📝 Criação de PR automático com atualizações
+
+### Como Criar um Release
+
+```bash
+# Atualizar version em pubspec.yaml para 1.0.1
+# Commit e criar tag
+git add pubspec.yaml
+git commit -m "chore: bump version to 1.0.1"
+git tag v1.0.1
+git push origin main
+git push origin v1.0.1
+```
+
+Os workflows irão automaticamente:
+- Executar testes
+- Gerar APK e App Bundle
+- Criar release no GitHub com os arquivos
+
+Para mais detalhes, veja [.github/workflows/README.md](.github/workflows/README.md)
 
 ---
 

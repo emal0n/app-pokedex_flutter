@@ -1,0 +1,91 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 10:00 AM UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: Check and Update Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.11.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Get current dependencies
+        run: flutter pub get
+
+      - name: Check for outdated packages
+        id: outdated
+        run: |
+          flutter pub outdated --json > outdated.json || true
+          cat outdated.json
+
+      - name: Upgrade dependencies
+        run: |
+          flutter pub upgrade
+          flutter pub get
+
+      - name: Run tests
+        id: tests
+        run: flutter test || echo "tests_failed=true" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.tests.outputs.tests_failed != 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update Flutter dependencies"
+          title: "🔄 Automated Dependency Updates"
+          body: |
+            ## 🔄 Automated Dependency Updates
+            
+            This PR updates the Flutter dependencies to their latest compatible versions.
+            
+            ### Changes
+            - Updated packages to latest versions
+            - All tests are passing ✅
+            
+            ### Review
+            Please review the changes and verify that everything works as expected.
+            
+            ---
+            _This PR was automatically created by GitHub Actions._
+          branch: automated-dependency-updates
+          delete-branch: true
+          labels: dependencies, automated
+
+      - name: Create Issue if Tests Failed
+        if: steps.tests.outputs.tests_failed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ Dependency Update Failed - Tests Not Passing',
+              body: `## ⚠️ Dependency Update Failed
+              
+              The automated dependency update could not be completed because tests failed after upgrading dependencies.
+              
+              **Action Required:**
+              - Review the failed tests
+              - Manually update dependencies
+              - Fix any breaking changes
+              
+              **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`,
+              labels: ['dependencies', 'bug', 'automated']
+            });
+
