@@ -72,8 +72,8 @@ class PokemonCard extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 _getTypeColor(pokemon.types.isNotEmpty ? pokemon.types[0] : 'normal')
-                    .withValues(alpha: 0.2),
-                Colors.white,
+                    .withValues(alpha: 0.15),
+                const Color(0xFF1E1E1E),
               ],
             ),
           ),
@@ -87,7 +87,7 @@ class PokemonCard extends StatelessWidget {
                   '#${pokemon.id}',
                   style: GoogleFonts.roboto(
                     fontSize: 10,
-                    color: Colors.grey[600],
+                    color: Colors.grey[400],
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -122,7 +122,7 @@ class PokemonCard extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -161,6 +161,9 @@ class PokemonCard extends StatelessWidget {
     );
   }
 }
+
+
+
 
 
 

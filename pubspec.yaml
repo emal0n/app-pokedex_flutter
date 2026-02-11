@@ -37,6 +37,7 @@ dependencies:
   adaptive_platform_ui: ^0.1.101
   google_fonts: ^8.0.1
   http: ^1.1.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
