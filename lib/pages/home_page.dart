@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/adaptive_bottom_nav_bar.dart';
+import '../widgets/pokemon_card.dart';
+import '../services/pokemon_service.dart';
+import '../models/pokemon.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,13 +14,71 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  late PokemonService _pokemonService;
+  List<Pokemon> _pokemons = [];
   int _selectedIndex = 0;
+  bool _isLoading = true;
+  String? _errorMessage;
+  int _offset = 0;
+  final int _limit = 20;
+  final ScrollController _scrollController = ScrollController();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _pokemonService = PokemonService();
+    _loadPokemons();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      _loadMorePokemons();
+    }
+  }
+
+  Future<void> _loadPokemons() async {
+    try {
+      final pokemons = await _pokemonService.getPokemonList(
+        limit: _limit,
+        offset: _offset,
+      );
+      setState(() {
+        _pokemons = pokemons;
+        _isLoading = false;
+        _errorMessage = null;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = e.toString();
+      });
+    }
+  }
+
+  Future<void> _loadMorePokemons() async {
+    try {
+      _offset += _limit;
+      final pokemons = await _pokemonService.getPokemonList(
+        limit: _limit,
+        offset: _offset,
+      );
+      setState(() {
+        _pokemons.addAll(pokemons);
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao carregar mais pokémons: $e')),
+        );
+      }
+    }
   }
 
   void _onItemTapped(int index) {
@@ -32,34 +93,77 @@ class _HomePageState extends State<HomePage> {
       appBar: AdaptiveAppBar(
         title: 'POKEDEX',
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'You have pushed the button this many times:',
-              style: GoogleFonts.roboto(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              '$_counter',
-              style: GoogleFonts.poppins(
-                fontSize: 72,
-                fontWeight: FontWeight.bold,
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(
                 color: Colors.deepPurple,
               ),
-            ),
-          ],
-        ),
-      ),
+            )
+          : _errorMessage != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Erro ao carregar pokémons',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _isLoading = true;
+                            _offset = 0;
+                          });
+                          _loadPokemons();
+                        },
+                        child: const Text('Tentar Novamente'),
+                      ),
+                    ],
+                  ),
+                )
+              : GridView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  itemCount: _pokemons.length,
+                  itemBuilder: (context, index) {
+                    return PokemonCard(
+                      pokemon: _pokemons[index],
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${_pokemons[index].name} selecionado!'),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: () {
+          setState(() {
+            _isLoading = true;
+            _offset = 0;
+          });
+          _loadPokemons();
+        },
+        tooltip: 'Recarregar',
+        child: const Icon(Icons.refresh),
       ),
       bottomNavigationBar: AdaptiveBottomNavBar(
         selectedIndex: _selectedIndex,
