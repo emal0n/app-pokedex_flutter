@@ -61,36 +61,12 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.pokemon.name,
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
         elevation: 0,
         backgroundColor: const Color(0xFF1E1E1E),
-        actions: [
-          IconButton(
-            icon: Icon(
-              _isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: _isFavorite ? Colors.red : Colors.white,
-            ),
-            onPressed: () {
-              setState(() {
-                _isFavorite = !_isFavorite;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    _isFavorite
-                        ? '❤️ Adicionado aos favoritos!'
-                        : '💔 Removido dos favoritos!',
-                  ),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-            },
-          ),
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -147,6 +123,16 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                       size: 200,
                       color: Colors.grey[400],
                     ),
+                  const SizedBox(height: 16),
+                  // Nome do Pokémon
+                  Text(
+                    widget.pokemon.name,
+                    style: GoogleFonts.poppins(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   // Tipos
                   Wrap(
@@ -214,51 +200,6 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                   const SizedBox(height: 24),
 
                   // Botões de ação
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Comparando ${widget.pokemon.name}...',
-                                ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.compare),
-                          label: const Text('Comparar'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Compartilhando ${widget.pokemon.name}...',
-                                ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.share),
-                          label: const Text('Compartilhar'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

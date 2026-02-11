@@ -37,12 +37,7 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
 
         child: Column(
           children: [
-            const SizedBox(height: 16),
-            _buildAnimatedMenuOption(3,
-              title: 'Favoritos',
-              subtitle: 'Seus Pokémons favoritos',
-              onTap: () => _showFavoritesMessage(context),
-            ),
+            _buildAboutSection(),
             const SizedBox(height: 16),
             _buildAnimatedMenuOption(4,
               title: 'Sobre a API',
@@ -106,7 +101,7 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(9),
           color: const Color(0xFF1E1E1E),
           boxShadow: [
             BoxShadow(
@@ -139,6 +134,69 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
             size: 18,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAboutSection() {
+    return Container(
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(12),
+      //   color: const Color(0xFF1E1E1E),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.black.withValues(alpha: 0.3),
+      //       blurRadius: 8,
+      //       offset: const Offset(0, 2),
+      //     ),
+      //   ],
+      // ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Saiba mais',
+            style: GoogleFonts.poppins(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Explore o código-fonte e aprenda como este projeto foi desenvolvido.',
+            style: GoogleFonts.roboto(
+              fontSize: 13,
+              color: Colors.grey[400],
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Abrindo GitHub...'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.open_in_new),
+              label: Text(
+                'Ver no GitHub',
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -283,31 +341,6 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
             child: Text(
               'Buscar',
               style: GoogleFonts.poppins(color: Colors.black),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showFavoritesMessage(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Favoritos',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Você ainda não tem Pokémons favoritos.\n\nClique no coração no card do Pokémon para adicionar aos favoritos!',
-          style: GoogleFonts.roboto(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'OK',
-              style: GoogleFonts.poppins(color: Colors.white),
             ),
           ),
         ],
