@@ -91,78 +91,90 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildPokemonListPage() {
-    return _isLoading
-        ? GridView.builder(
-            padding: const EdgeInsets.all(8),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.75,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+    if (_isLoading) {
+      return GridView.builder(
+        padding: const EdgeInsets.all(8),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
+        itemCount: 20,
+        itemBuilder: (context, index) {
+          return const ShimmerPokemonCard();
+        },
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red,
             ),
-            itemCount: 20,
-            itemBuilder: (context, index) {
-              return const ShimmerPokemonCard();
-            },
-          )
-        : _errorMessage != null
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Erro ao carregar pokémons',
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _isLoading = true;
-                          _offset = 0;
-                        });
-                        _loadPokemons();
-                      },
-                      child: const Text('Tentar Novamente'),
-                    ),
-                  ],
+            const SizedBox(height: 16),
+            Text(
+              'Erro ao carregar pokémons',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _isLoading = true;
+                  _offset = 0;
+                });
+                _loadPokemons();
+              },
+              child: const Text('Tentar Novamente'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {
+          _offset = 0;
+        });
+        await _loadPokemons();
+      },
+      child: GridView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(8),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
+        itemCount: _pokemons.length,
+        itemBuilder: (context, index) {
+          return PokemonCard(
+            pokemon: _pokemons[index],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PokemonDetailPage(pokemon: _pokemons[index]),
                 ),
-              )
-            : GridView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(8),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.75,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: _pokemons.length,
-                itemBuilder: (context, index) {
-                  return PokemonCard(
-                    pokemon: _pokemons[index],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              PokemonDetailPage(pokemon: _pokemons[index]),
-                        ),
-                      );
-                    },
-                  );
-                },
               );
+            },
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildExtrasPage() {
@@ -193,19 +205,6 @@ class _HomePageState extends State<HomePage> {
         title: 'POKEDEX',
       ),
       body: _buildCurrentPage(),
-      floatingActionButton: _selectedIndex == 0
-          ? FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  _isLoading = true;
-                  _offset = 0;
-                });
-                _loadPokemons();
-              },
-              tooltip: 'Recarregar',
-              child: const Icon(Icons.refresh),
-            )
-          : null,
       bottomNavigationBar: AdaptiveBottomNavBar(
         selectedIndex: _selectedIndex,
         onTap: _onItemTapped,
