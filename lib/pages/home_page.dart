@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   List<Pokemon> _pokemons = [];
   int _selectedIndex = 0;
   bool _isLoading = true;
+  bool _isRefreshing = false;
   String? _errorMessage;
   int _offset = 0;
   final int _limit = 20;
@@ -46,8 +47,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _loadPokemons() async {
+  Future<void> _loadPokemons({bool isRefresh = false}) async {
     try {
+      if (isRefresh) {
+        setState(() {
+          _isRefreshing = true;
+        });
+      }
       final pokemons = await _pokemonService.getPokemonList(
         limit: _limit,
         offset: _offset,
@@ -55,11 +61,13 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _pokemons = pokemons;
         _isLoading = false;
+        _isRefreshing = false;
         _errorMessage = null;
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
+        _isRefreshing = false;
         _errorMessage = e.toString();
       });
     }
@@ -147,33 +155,47 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _offset = 0;
         });
-        await _loadPokemons();
+        await _loadPokemons(isRefresh: true);
       },
-      child: GridView.builder(
-        controller: _scrollController,
-        padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.75,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemCount: _pokemons.length,
-        itemBuilder: (context, index) {
-          return PokemonCard(
-            pokemon: _pokemons[index],
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      PokemonDetailPage(pokemon: _pokemons[index]),
-                ),
-              );
-            },
-          );
-        },
-      ),
+      child: _isRefreshing
+          ? GridView.builder(
+              padding: const EdgeInsets.all(8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: 20,
+              itemBuilder: (context, index) {
+                return const ShimmerPokemonCard();
+              },
+            )
+          : GridView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: _pokemons.length,
+              itemBuilder: (context, index) {
+                return PokemonCard(
+                  pokemon: _pokemons[index],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PokemonDetailPage(pokemon: _pokemons[index]),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 

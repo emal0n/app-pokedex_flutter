@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ExtrasPage extends StatefulWidget {
   final VoidCallback? onShowPokemons;
@@ -176,13 +177,27 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Abrindo GitHub...'),
-                    duration: Duration(seconds: 1),
-                  ),
-                );
+              onPressed: () async {
+                const githubUrl = 'https://github.com/emal0n/app-pokedex_flutter';
+                try {
+                  if (await canLaunchUrl(Uri.parse(githubUrl))) {
+                    await launchUrl(Uri.parse(githubUrl), mode: LaunchMode.externalApplication);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Não foi possível abrir o link'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Erro ao abrir o link'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
               },
               icon: const Icon(Icons.open_in_new),
               label: Text(

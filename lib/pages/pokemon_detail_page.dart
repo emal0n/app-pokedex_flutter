@@ -12,8 +12,6 @@ class PokemonDetailPage extends StatefulWidget {
 }
 
 class _PokemonDetailPageState extends State<PokemonDetailPage> {
-  bool _isFavorite = false;
-
   Color _getTypeColor(String type) {
     switch (type.toLowerCase()) {
       case 'fire':
@@ -161,46 +159,10 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
               ),
             ),
 
-            // Informações
+            // Informações - Aba Sobre
             Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Seção Nome
-                  Text(
-                    'Informações do Pokémon',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Cards de Info
-                  _buildInfoCard(
-                    icon: Icons.numbers,
-                    title: 'ID',
-                    value: '#${widget.pokemon.id}',
-                  ),
-                  const SizedBox(height: 12),
-                  _buildInfoCard(
-                    icon: Icons.label,
-                    title: 'Nome',
-                    value: widget.pokemon.name,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildInfoCard(
-                    icon: Icons.category,
-                    title: 'Tipos',
-                    value: widget.pokemon.types.join(', ').toUpperCase(),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Botões de ação
-                ],
-              ),
+              padding: const EdgeInsets.only(top: 24, left: 24, right: 24, bottom: 24),
+              child: _buildAboutTab(),
             ),
             ],
           ),
@@ -224,54 +186,234 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
     );
   }
 
-  Widget _buildInfoCard({
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF252525),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[800]!, width: 1),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Row(
+
+  Widget _buildAboutTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white, size: 28),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.roboto(
-                  fontSize: 12,
-                  color: Colors.grey[400],
-                  fontWeight: FontWeight.w500,
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF252525),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[800]!, width: 1),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Descrição',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                const SizedBox(height: 12),
+                Text(
+                  'Este é um Pokémon da geração oficial. Ele pertence aos tipos: ${widget.pokemon.types.join(', ')}.',
+                  style: GoogleFonts.roboto(
+                    fontSize: 13,
+                    color: Colors.grey[400],
+                    height: 1.6,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF252525),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[800]!, width: 1),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Estatísticas Base',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildStatBar(
+                  label: 'Poder de Ataque',
+                  value: 65,
+                  maxValue: 150,
+                  color: Colors.red,
+                ),
+                const SizedBox(height: 12),
+                _buildStatBar(
+                  label: 'Defesa',
+                  value: 65,
+                  maxValue: 150,
+                  color: Colors.blue,
+                ),
+                const SizedBox(height: 12),
+                _buildStatBar(
+                  label: 'Velocidade',
+                  value: 45,
+                  maxValue: 150,
+                  color: Colors.yellow,
+                ),
+                const SizedBox(height: 12),
+                _buildStatBar(
+                  label: 'Saúde',
+                  value: 45,
+                  maxValue: 150,
+                  color: Colors.green,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF252525),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[800]!, width: 1),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Informações Gerais',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Altura',
+                          style: GoogleFonts.roboto(
+                            fontSize: 12,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '0.4 m',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Peso',
+                          style: GoogleFonts.roboto(
+                            fontSize: 12,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '5.0 kg',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Geração',
+                          style: GoogleFonts.roboto(
+                            fontSize: 12,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Gênero I',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildStatBar({
+    required String label,
+    required int value,
+    required int maxValue,
+    required Color color,
+  }) {
+    final percentage = value / maxValue;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.roboto(
+                fontSize: 12,
+                color: Colors.grey[400],
+              ),
+            ),
+            Text(
+              '$value',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: percentage,
+            minHeight: 8,
+            backgroundColor: Colors.grey[800],
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+          ),
+        ),
+      ],
+    );
+  }
 }
-
-
-
-
-
 
 
 
