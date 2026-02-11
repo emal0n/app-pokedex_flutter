@@ -202,7 +202,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
       appBar: AdaptiveAppBar(
-        title: 'POKEDEX',
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/meowth_pokemon_1_41_49-removebg-preview.png',
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
       body: _buildCurrentPage(),
       bottomNavigationBar: AdaptiveBottomNavBar(

@@ -349,61 +349,141 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
   }
 
   void _showAboutDialog(BuildContext context) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Sobre PokéAPI',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        content: SingleChildScrollView(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.75,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) => Container(
+          decoration: const BoxDecoration(
+            color: Color(0xFF1E1E1E),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildInfoRow('API:', 'PokéAPI v2'),
-              _buildInfoRow('URL:', 'pokeapi.co'),
-              _buildInfoRow('Autenticação:', 'Não requerida'),
-              _buildInfoRow('Total de Pokémons:', '1025+'),
-              const SizedBox(height: 16),
-              Text(
-                'A PokéAPI é uma RESTful API que fornece informações completas sobre Pokémons.',
-                style: GoogleFonts.roboto(fontSize: 12, color: Colors.grey[600]),
+              // Drag indicator
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 16),
+                child: Container(
+                  width: 48,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[600],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Sobre PokéAPI',
+                          style: GoogleFonts.poppins(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        _buildInfoRowModal('API:', 'PokéAPI v2'),
+                        _buildInfoRowModal('URL:', 'pokeapi.co'),
+                        _buildInfoRowModal('Autenticação:', 'Não requerida'),
+                        _buildInfoRowModal('Total de Pokémons:', '1025+'),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Sobre',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'A PokéAPI é uma RESTful API que fornece informações completas sobre Pokémons. É uma fonte de dados aberta e gratuita, mantida pela comunidade.',
+                          style: GoogleFonts.roboto(
+                            fontSize: 14,
+                            color: Colors.grey[400],
+                            height: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Close button
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Fechar',
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Fechar',
-              style: GoogleFonts.poppins(color: Colors.deepPurple),
-            ),
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+  Widget _buildInfoRowModal(String label, String value) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF252525),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[800]!, width: 1),
+      ),
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+            style: GoogleFonts.roboto(
+              fontSize: 12,
+              color: Colors.grey[400],
+              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               value,
-              style: GoogleFonts.roboto(color: Colors.grey[300]),
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
