@@ -62,16 +62,15 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF1E1E1E),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        backgroundColor: Colors.transparent,
+        toolbarHeight: 0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
             // Header com imagem
             Container(
               width: double.infinity,
@@ -203,8 +202,24 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                 ],
               ),
             ),
-          ],
-        ),
+            ],
+          ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top - 10,
+            left: 16,
+            child: FloatingActionButton(
+              onPressed: () => Navigator.pop(context),
+              elevation: 0,
+              backgroundColor: Colors.white.withValues(alpha: 1),
+              foregroundColor: Colors.black,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32)),
+              ),
+              child: const Icon(Icons.arrow_back_ios_new),
+            ),
+          ),
+        ],
       ),
     );
   }
