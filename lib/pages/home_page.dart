@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   bool _isLoading = true;
   bool _isRefreshing = false;
+  bool _isLoadingMore = false;
   String? _errorMessage;
   int _offset = 0;
   final int _limit = 20;
@@ -42,8 +43,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      _loadMorePokemons();
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+      if (!_isLoadingMore && !_isLoading) {
+        _loadMorePokemons();
+      }
     }
   }
 
@@ -74,6 +77,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadMorePokemons() async {
+    if (_isLoadingMore) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
     try {
       _offset += _limit;
       final pokemons = await _pokemonService.getPokemonList(
@@ -82,8 +91,13 @@ class _HomePageState extends State<HomePage> {
       );
       setState(() {
         _pokemons.addAll(pokemons);
+        _isLoadingMore = false;
       });
     } catch (e) {
+      setState(() {
+        _isLoadingMore = false;
+        _offset -= _limit; // Reverter o offset em caso de erro
+      });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao carregar mais pokémons: $e')),
@@ -171,30 +185,61 @@ class _HomePageState extends State<HomePage> {
                 return const ShimmerPokemonCard();
               },
             )
-          : GridView.builder(
+          : CustomScrollView(
               controller: _scrollController,
-              padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.75,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: _pokemons.length,
-              itemBuilder: (context, index) {
-                return PokemonCard(
-                  pokemon: _pokemons[index],
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PokemonDetailPage(pokemon: _pokemons[index]),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.all(8),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.75,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return PokemonCard(
+                          pokemon: _pokemons[index],
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PokemonDetailPage(pokemon: _pokemons[index]),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      childCount: _pokemons.length,
+                    ),
+                  ),
+                ),
+                if (_isLoadingMore)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Carregando mais Pokémons...',
+                              style: GoogleFonts.roboto(
+                                fontSize: 12,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
-                );
-              },
+                    ),
+                  ),
+              ],
             ),
     );
   }
