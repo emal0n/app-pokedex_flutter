@@ -204,7 +204,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Descrição',
+                  'Informações',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -212,14 +212,83 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  'Este é um Pokémon da geração oficial. Ele pertence aos tipos: ${widget.pokemon.types.join(', ')}.',
-                  style: GoogleFonts.roboto(
-                    fontSize: 13,
-                    color: Colors.grey[400],
-                    height: 1.6,
+                if (widget.pokemon.abilities.isNotEmpty) ...[
+                  Text(
+                    'Habilidades',
+                    style: GoogleFonts.roboto(
+                      fontSize: 12,
+                      color: Colors.grey[400],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: widget.pokemon.abilities.map((ability) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ability.isHidden
+                              ? Colors.purple.withValues(alpha: 0.2)
+                              : Colors.blue.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: ability.isHidden
+                                ? Colors.purple.withValues(alpha: 0.5)
+                                : Colors.blue.withValues(alpha: 0.5),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              ability.name.replaceAll('-', ' ').toUpperCase(),
+                              style: GoogleFonts.roboto(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            if (ability.isHidden) ...[
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.visibility_off,
+                                size: 14,
+                                color: Colors.purple[300],
+                              ),
+                            ],
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                if (widget.pokemon.baseExperience > 0) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Experiência Base',
+                        style: GoogleFonts.roboto(
+                          fontSize: 12,
+                          color: Colors.grey[400],
+                        ),
+                      ),
+                      Text(
+                        '${widget.pokemon.baseExperience} XP',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -244,31 +313,45 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                 ),
                 const SizedBox(height: 16),
                 _buildStatBar(
-                  label: 'Poder de Ataque',
-                  value: 65,
-                  maxValue: 150,
+                  label: 'HP',
+                  value: widget.pokemon.stats.hp,
+                  maxValue: 255,
+                  color: Colors.green,
+                ),
+                const SizedBox(height: 12),
+                _buildStatBar(
+                  label: 'Ataque',
+                  value: widget.pokemon.stats.attack,
+                  maxValue: 255,
                   color: Colors.red,
                 ),
                 const SizedBox(height: 12),
                 _buildStatBar(
                   label: 'Defesa',
-                  value: 65,
-                  maxValue: 150,
+                  value: widget.pokemon.stats.defense,
+                  maxValue: 255,
                   color: Colors.blue,
                 ),
                 const SizedBox(height: 12),
                 _buildStatBar(
-                  label: 'Velocidade',
-                  value: 45,
-                  maxValue: 150,
-                  color: Colors.yellow,
+                  label: 'Ataque Especial',
+                  value: widget.pokemon.stats.specialAttack,
+                  maxValue: 255,
+                  color: Colors.orange,
                 ),
                 const SizedBox(height: 12),
                 _buildStatBar(
-                  label: 'Saúde',
-                  value: 45,
-                  maxValue: 150,
-                  color: Colors.green,
+                  label: 'Defesa Especial',
+                  value: widget.pokemon.stats.specialDefense,
+                  maxValue: 255,
+                  color: Colors.lightBlue,
+                ),
+                const SizedBox(height: 12),
+                _buildStatBar(
+                  label: 'Velocidade',
+                  value: widget.pokemon.stats.speed,
+                  maxValue: 255,
+                  color: Colors.yellow,
                 ),
               ],
             ),
@@ -285,7 +368,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Informações Gerais',
+                  'Informações Físicas',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -294,11 +377,17 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Icon(
+                          Icons.height,
+                          color: Colors.grey[400],
+                          size: 20,
+                        ),
+                        const SizedBox(height: 8),
                         Text(
                           'Altura',
                           style: GoogleFonts.roboto(
@@ -308,7 +397,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '0.4 m',
+                          '${(widget.pokemon.height / 10).toStringAsFixed(1)} m',
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
@@ -317,9 +406,20 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                         ),
                       ],
                     ),
+                    Container(
+                      width: 1,
+                      height: 50,
+                      color: Colors.grey[800],
+                    ),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Icon(
+                          Icons.monitor_weight,
+                          color: Colors.grey[400],
+                          size: 20,
+                        ),
+                        const SizedBox(height: 8),
                         Text(
                           'Peso',
                           style: GoogleFonts.roboto(
@@ -329,28 +429,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '5.0 kg',
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Geração',
-                          style: GoogleFonts.roboto(
-                            fontSize: 12,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Gênero I',
+                          '${(widget.pokemon.weight / 10).toStringAsFixed(1)} kg',
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
