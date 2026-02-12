@@ -4,7 +4,11 @@
     <application
         android:label="pokedex"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowNativeHeapPointerTagging="false">
+        <property
+            android:name="android.app.16kb_page_size.enabled"
+            android:value="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

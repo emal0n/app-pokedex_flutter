@@ -37,6 +37,19 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    testOptions {
+        managedDevices {
+            devices {
+                // Add 16KB page size device configuration
+                create<com.android.build.api.dsl.ManagedVirtualDevice>("aosp16KBDevice") {
+                    device = "Pixel 6"
+                    apiLevel = 35
+                    systemImageSource = "aosp"
+                }
+            }
+        }
+    }
 }
 
 flutter {
