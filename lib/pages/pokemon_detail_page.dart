@@ -197,9 +197,8 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
             decoration: BoxDecoration(
               color: const Color(0xFF252525),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[800]!, width: 1),
             ),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -297,9 +296,8 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
             decoration: BoxDecoration(
               color: const Color(0xFF252525),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[800]!, width: 1),
             ),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -361,9 +359,8 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
             decoration: BoxDecoration(
               color: const Color(0xFF252525),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[800]!, width: 1),
             ),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
