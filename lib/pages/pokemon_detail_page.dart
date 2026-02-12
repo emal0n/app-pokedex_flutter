@@ -172,13 +172,14 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
             left: 16,
             child: FloatingActionButton(
               onPressed: () => Navigator.pop(context),
+              mini: true,
               elevation: 0,
               backgroundColor: Colors.white.withValues(alpha: 1),
               foregroundColor: Colors.black,
               shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32)),
+                borderRadius: BorderRadius.all(Radius.circular(24)),
               ),
-              child: const Icon(Icons.arrow_back_ios_new),
+              child: const Icon(Icons.arrow_back_ios_new, size: 18),
             ),
           ),
         ],
