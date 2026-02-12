@@ -39,6 +39,8 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
           children: [
             _buildAboutSection(),
             const SizedBox(height: 16),
+            _buildDeveloperSection(),
+            const SizedBox(height: 16),
             _buildAnimatedMenuOption(4,
               title: 'Sobre a API',
               subtitle: 'Informações sobre PokéAPI',
@@ -172,6 +174,77 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
               height: 1.5,
             ),
           ),
+
+
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeveloperSection() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFF1E1E1E),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[800],
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    width: 2,
+                  ),
+                ),
+                child: Icon(
+                  Icons.person,
+                  size: 30,
+                  color: Colors.grey[400],
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Desenvolvedor',
+                      style: GoogleFonts.roboto(
+                        fontSize: 12,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Edmundo Neto "emal0n"',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Divider(color: Colors.grey[800], thickness: 1),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
