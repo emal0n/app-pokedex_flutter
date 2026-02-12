@@ -37,11 +37,11 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
 
         child: Column(
           children: [
-            _buildAboutSection(),
+            _buildAnimatedSection(0, _buildAboutSection()),
             const SizedBox(height: 16),
-            _buildDeveloperSection(),
+            _buildAnimatedSection(1, _buildDeveloperSection()),
             const SizedBox(height: 16),
-            _buildAnimatedMenuOption(4,
+            _buildAnimatedMenuOption(2,
               title: 'Sobre a API',
               subtitle: 'Informações sobre PokéAPI',
               onTap: () => _showAboutDialog(context),
@@ -49,6 +49,24 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAnimatedSection(int index, Widget child) {
+    final animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(
+          index * 0.15,
+          (index * 0.15) + 0.5,
+          curve: Curves.easeIn,
+        ),
+      ),
+    );
+
+    return FadeTransition(
+      opacity: animation,
+      child: child,
     );
   }
 
@@ -62,34 +80,19 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
       CurvedAnimation(
         parent: _animationController,
         curve: Interval(
-          index * 0.1,
-          (index * 0.1) + 0.3,
-          curve: Curves.easeOut,
+          index * 0.15,
+          (index * 0.15) + 0.5,
+          curve: Curves.easeIn,
         ),
       ),
     );
 
     return FadeTransition(
       opacity: animation,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0.3, 0.0),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Interval(
-              index * 0.1,
-              (index * 0.1) + 0.3,
-              curve: Curves.easeOut,
-            ),
-          ),
-        ),
-        child: _buildMenuOption(
-          title: title,
-          subtitle: subtitle,
-          onTap: onTap,
-        ),
+      child: _buildMenuOption(
+        title: title,
+        subtitle: subtitle,
+        onTap: onTap,
       ),
     );
   }
