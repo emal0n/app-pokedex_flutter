@@ -42,7 +42,7 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
           children: [
             _buildAnimatedSection(0, _buildAboutSection()),
             const SizedBox(height: 16),
-            _buildAnimatedSection(3, _buildDeveloperSection()),
+            _buildAnimatedSection(1, _buildDeveloperSection()),
             const SizedBox(height: 16),
             _buildAnimatedSection(2, _buildM3EActionCards(colorScheme)),
           ],
@@ -70,39 +70,84 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
   }
 
   Widget _buildM3EActionCards(ColorScheme colorScheme) {
-    return M3ECardList.of(
-      onTap: (index) {
-        if (index == 0) {
-          _showAboutDialog(context, colorScheme);
-          return;
-        }
-
-        _handleQuickAction('pokemons');
-      },
+    return Column(
       children: [
-        ListTile(
-          title: Text(
-            'Sobre a API',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
+        _buildActionCard(
+          colorScheme: colorScheme,
+          icon: Icons.info_outline_rounded,
+          title: 'Sobre a API',
+          subtitle: 'Informacoes sobre PokéAPI',
+          useDeveloperStyle: true,
+          onTap: () => _showAboutDialog(context, colorScheme),
+        ),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
+
+  Widget _buildActionCard({
+    required ColorScheme colorScheme,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    bool useDeveloperStyle = false,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: useDeveloperStyle
+                ? colorScheme.surfaceContainerHigh
+                : colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.shadow
+                    .withValues(alpha: useDeveloperStyle ? 0.14 : 0.08),
+                blurRadius: useDeveloperStyle ? 14 : 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          subtitle: Text(
-            'Informacoes sobre PokéAPI',
-            style: GoogleFonts.roboto(
-              fontSize: 12,
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            leading: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: colorScheme.primary, size: 22),
+            ),
+            title: Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface,
+              ),
+            ),
+            subtitle: Text(
+              subtitle,
+              style: GoogleFonts.roboto(
+                fontSize: 12,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios_rounded,
               color: colorScheme.onSurfaceVariant,
+              size: 16,
             ),
-          ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            color: colorScheme.onSurface,
-            size: 18,
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -154,13 +199,13 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         color: colorScheme.surfaceContainerHigh,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: colorScheme.shadow.withValues(alpha: 0.14),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -171,23 +216,15 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
           Row(
             children: [
               Container(
-                width: 60,
-                height: 60,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: colorScheme.surfaceContainerHighest,
-                  border: Border.all(
-                    color: colorScheme.outlineVariant,
-                    width: 2,
-                  ),
+                  color: colorScheme.primary.withValues(alpha: 0.12),
                 ),
-                child: Icon(
-                  Icons.person,
-                  size: 30,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                child: Icon(Icons.person_rounded, color: colorScheme.primary),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +240,7 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
                     Text(
                       'Edmundo Neto "emal0n"',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
                         color: colorScheme.onSurface,
                       ),
@@ -229,6 +266,24 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDeveloperTag(String label, ColorScheme colorScheme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.roboto(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: colorScheme.onSecondaryContainer,
+        ),
       ),
     );
   }
@@ -283,7 +338,6 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        _buildInfoRowModal('API:', 'PokéAPI v2'),
                         _buildInfoRowModal('URL:', 'pokeapi.co'),
                         _buildInfoRowModal('Autenticação:', 'Não requerida'),
                         _buildInfoRowModal('Total de Pokémons:', '1025+'),
@@ -318,7 +372,7 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
                   width: double.infinity,
                   child: M3EButton(
                     style: M3EButtonStyle.filled,
-                    size: M3EButtonSize.lg,
+                    size: M3EButtonSize.md,
                     onPressed: () => Navigator.pop(context),
                     label: Text(
                       'Fechar',
@@ -339,9 +393,8 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
 
     return Container(
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outlineVariant, width: 1),
       ),
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(bottom: 12),
