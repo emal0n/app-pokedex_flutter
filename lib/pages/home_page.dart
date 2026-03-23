@@ -58,6 +58,20 @@ class _HomePageState extends State<HomePage> {
   int _offset = 0;
   final int _limit = 20;
   final ScrollController _scrollController = ScrollController();
+  static const BorderRadius _bottomRegionRadius = BorderRadius.only(
+    topLeft: Radius.circular(34),
+    topRight: Radius.circular(34),
+  );
+
+  BoxDecoration _homeBackgroundDecoration(ColorScheme colorScheme) {
+    return BoxDecoration(
+      color: colorScheme.surface,
+    );
+  }
+
+  Color _contentContainerColor(ColorScheme colorScheme) {
+    return colorScheme.surfaceContainerLowest.withValues(alpha: 0.95);
+  }
 
   @override
   void initState() {
@@ -155,45 +169,199 @@ class _HomePageState extends State<HomePage> {
         .toList();
   }
 
-  SliverToBoxAdapter _buildCategorySelector(ColorScheme colorScheme) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 8, 8, 2),
-        child: SizedBox(
-          height: 56,
-          child: M3EToggleButtonGroup(
-            selectedIndex: _selectedCategoryIndex,
-            onSelectedIndexChanged: (index) {
-              if (index == null) return;
-              setState(() {
-                _selectedCategoryIndex = index;
-              });
-            },
-            type: M3EButtonGroupType.standard,
-            shape: M3EButtonShape.round,
-            size: M3EButtonSize.md,
-            style: M3EButtonStyle.outlined,
-            overflow: M3EButtonGroupOverflow.scroll,
-            decoration: M3EToggleButtonDecoration(
-              backgroundColor: colorScheme.surfaceContainerHighest,
-              foregroundColor: colorScheme.onSurfaceVariant,
-              checkedBackgroundColor: colorScheme.secondaryContainer,
-              checkedForegroundColor: colorScheme.onSecondaryContainer,
+  Widget _buildCategorySelector(ColorScheme colorScheme) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 8, 2),
+      child: SizedBox(
+        height: 56,
+        child: M3EToggleButtonGroup(
+          selectedIndex: _selectedCategoryIndex,
+          onSelectedIndexChanged: (index) {
+            if (index == null) return;
+            setState(() {
+              _selectedCategoryIndex = index;
+            });
+          },
+          type: M3EButtonGroupType.standard,
+          shape: M3EButtonShape.round,
+          size: M3EButtonSize.md,
+          style: M3EButtonStyle.outlined,
+          overflow: M3EButtonGroupOverflow.scroll,
+          decoration: M3EToggleButtonDecoration(
+            backgroundColor: colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.7,
             ),
-            actions: _categoryFilters
-                .map(
-                  (category) => M3EToggleButtonGroupAction(
-                    // icon: Icon(category.icon, size: 18),
-                    label: Text(
-                      category.label,
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
+            foregroundColor: colorScheme.onSurface,
+            checkedBackgroundColor: colorScheme.secondaryContainer,
+            checkedForegroundColor: colorScheme.onSecondaryContainer,
+          ),
+          actions: _categoryFilters
+              .map(
+                (category) => M3EToggleButtonGroupAction(
+                  label: Text(
+                    category.label,
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopTitleRow(ColorScheme colorScheme) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Pokedex',
+              style: GoogleFonts.poppins(
+                fontSize: 40,
+                height: 1,
+                fontWeight: FontWeight.w900,
+                color: colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPokemonContainer(
+    ColorScheme colorScheme,
+    List<Pokemon> filteredPokemons,
+  ) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+        decoration: BoxDecoration(
+          color: _contentContainerColor(colorScheme),
+          borderRadius: _bottomRegionRadius,
+        ),
+        child: ClipRRect(
+          borderRadius: _bottomRegionRadius,
+          child: Stack(
+            children: [
+              RefreshIndicator(
+                onRefresh: () async {
+                  setState(() {
+                    _offset = 0;
+                  });
+                  await _loadPokemons(isRefresh: true);
+                },
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    if (filteredPokemons.isEmpty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.search_off_rounded,
+                                  size: 36,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Nenhum pokemon dessa categoria foi carregado ainda.',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 13,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      SliverPadding(
+                        padding: const EdgeInsets.all(12),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.75,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                              ),
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            return PokemonCard(
+                              pokemon: filteredPokemons[index],
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PokemonDetailPage(
+                                      pokemon: filteredPokemons[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }, childCount: filteredPokemons.length),
+                        ),
+                      ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 80)),
+                  ],
+                ),
+              ),
+              if (_isLoadingMore)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 18,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainer.withValues(
+                          alpha: 0.95,
+                        ),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2.2),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Carregando mais...',
+                            style: GoogleFonts.roboto(
+                              fontSize: 12,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                )
-                .toList(),
+                ),
+            ],
           ),
         ),
       ),
@@ -201,29 +369,37 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildLoadingIndicatorView(ColorScheme colorScheme) {
-    return CustomScrollView(
-      slivers: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildTopTitleRow(colorScheme),
         _buildCategorySelector(colorScheme),
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const LoadingIndicatorM3E(
-                  variant: LoadingIndicatorM3EVariant.contained,
-                  constraints: BoxConstraints.tightFor(width: 72, height: 72),
-                  semanticLabel: 'Carregando pokemons',
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Carregando pokemons...',
-                  style: GoogleFonts.roboto(
-                    fontSize: 13,
-                    color: colorScheme.onSurfaceVariant,
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            decoration: BoxDecoration(
+              color: _contentContainerColor(colorScheme),
+              borderRadius: _bottomRegionRadius,
+            ),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const LoadingIndicatorM3E(
+                    variant: LoadingIndicatorM3EVariant.contained,
+                    constraints: BoxConstraints.tightFor(width: 72, height: 72),
+                    semanticLabel: 'Carregando pokemons',
                   ),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  Text(
+                    'Carregando pokemons...',
+                    style: GoogleFonts.roboto(
+                      fontSize: 13,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -236,7 +412,10 @@ class _HomePageState extends State<HomePage> {
     final filteredPokemons = _filteredPokemons;
 
     if (_isLoading) {
-      return _buildLoadingIndicatorView(colorScheme);
+      return Container(
+        decoration: _homeBackgroundDecoration(colorScheme),
+        child: SafeArea(bottom: false, child: _buildLoadingIndicatorView(colorScheme)),
+      );
     }
 
     if (_errorMessage != null) {
@@ -270,98 +449,21 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        setState(() {
-          _offset = 0;
-        });
-        await _loadPokemons(isRefresh: true);
-      },
-      child: _isRefreshing
-          ? _buildLoadingIndicatorView(colorScheme)
-          : CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                _buildCategorySelector(colorScheme),
-                SliverPadding(
-                  padding: const EdgeInsets.all(8),
-                  sliver: SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.75,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                        ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      return PokemonCard(
-                        pokemon: filteredPokemons[index],
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PokemonDetailPage(
-                                pokemon: filteredPokemons[index],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }, childCount: filteredPokemons.length),
-                  ),
-                ),
-                if (filteredPokemons.isEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 32,
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.search_off_rounded,
-                            size: 36,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Nenhum pokemon dessa categoria foi carregado ainda.',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.roboto(
-                              fontSize: 13,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                if (_isLoadingMore)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            const CircularProgressIndicator(
-                              strokeCap: StrokeCap.round,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Carregando mais Pokémons...',
-                              style: GoogleFonts.roboto(
-                                fontSize: 12,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+    return Container(
+      decoration: _homeBackgroundDecoration(colorScheme),
+      child: SafeArea(
+        bottom: false,
+        child: _isRefreshing
+            ? _buildLoadingIndicatorView(colorScheme)
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildTopTitleRow(colorScheme),
+                  _buildCategorySelector(colorScheme),
+                  _buildPokemonContainer(colorScheme, filteredPokemons),
+                ],
+              ),
+      ),
     );
   }
 
@@ -389,15 +491,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(
-            'assets/meowth_pokemon_1_41_49-removebg-preview.png',
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
+      appBar: _selectedIndex == 0
+          ? null
+          : AppBar(
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'assets/meowth_pokemon_1_41_49-removebg-preview.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
       body: _buildCurrentPage(),
       bottomNavigationBar: AdaptiveBottomNavBar(
         selectedIndex: _selectedIndex,
