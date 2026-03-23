@@ -102,28 +102,6 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
             size: 18,
           ),
         ),
-        ListTile(
-          title: Text(
-            'Lista de Pokemons',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          subtitle: Text(
-            'Voltar para a pagina principal',
-            style: GoogleFonts.roboto(
-              fontSize: 12,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          trailing: Icon(
-            Icons.catching_pokemon,
-            color: colorScheme.primary,
-            size: 20,
-          ),
-        ),
       ],
     );
   }
