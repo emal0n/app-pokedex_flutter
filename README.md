@@ -6,16 +6,6 @@
 [![Repository](https://img.shields.io/badge/Repository-GitHub-black.svg)](https://github.com/emal0n/app-pokedex_flutter)
 [![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)](#)
 
-## Status CI/CD
-
-[![CI - Build and Test](https://github.com/emal0n/app-pokedex_flutter/workflows/CI%20-%20Build%20and%20Test/badge.svg)](https://github.com/emal0n/app-pokedex_flutter/actions)
-[![Android Release](https://github.com/emal0n/app-pokedex_flutter/workflows/Android%20Release%20Build/badge.svg)](https://github.com/emal0n/app-pokedex_flutter/actions)
-[![Code Quality](https://github.com/emal0n/app-pokedex_flutter/workflows/Code%20Quality%20&%20Security/badge.svg)](https://github.com/emal0n/app-pokedex_flutter/actions)
-
-Um aplicativo Flutter elegante e interativo para explorar e descobrir informações sobre Pokémon usando a PokéAPI.
-
-**Repositório GitHub:** [https://github.com/emal0n/app-pokedex_flutter](https://github.com/emal0n/app-pokedex_flutter)
-
 ---
 
 ## Recursos Principais
