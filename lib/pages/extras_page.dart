@@ -371,7 +371,7 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
                   width: double.infinity,
                   child: M3EButton(
                     style: M3EButtonStyle.filled,
-                    size: M3EButtonSize.md,
+                    size: M3EButtonSize.lg,
                     onPressed: () => Navigator.pop(context),
                     label: Text(
                       'Fechar',
