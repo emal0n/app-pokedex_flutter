@@ -26,6 +26,8 @@ Um aplicativo Flutter elegante e interativo para explorar e descobrir informaç�
 - Sistema de shimmer para estado de carregamento
 - Pull-to-refresh para atualização de dados
 - Interface responsiva e adaptativa para diferentes plataformas
+- Design system com Material 3 Expressive
+- Suporte a Color Monet (Material You) em dispositivos compatíveis
 - Dark mode por padrão
 - Navegação fluida e intuitiva
 - Acesso direto ao repositório GitHub
@@ -43,6 +45,7 @@ Um aplicativo Flutter elegante e interativo para explorar e descobrir informaç�
 - **google_fonts**: Tipografia personalizada do Google Fonts
 - **http**: Cliente HTTP para requisições à API
 - **shimmer**: Efeito de carregamento shimmer
+- **dynamic_color**: Suporte a cores dinâmicas (Color Monet)
 - **url_launcher**: Abertura de links externos
 
 ---
@@ -160,6 +163,8 @@ O projeto utiliza a [PokéAPI v2](https://pokeapi.co/) para obter os dados dos P
 ### Cores e Tipografia
 
 - **Tema**: Dark Mode (Fundo #1E1E1E)
+- **Design System**: Material 3 Expressive
+- **Suporte Dinâmico de Cores**: Color Monet (Material You)
 - **Tipografia Principal**: Poppins (Google Fonts)
 - **Tipografia Secundária**: Roboto (Google Fonts)
 - **Cores por Tipo de Pokémon**: Paleta customizada para cada tipo
@@ -189,7 +194,7 @@ O projeto segue uma arquitetura clean com separação de responsabilidades:
 - Provider Pattern para gerenciamento de estado
 - Repository Pattern para acesso a dados
 - Widget Composition para componentes reutilizáveis
-- Material Design 3
+- Material Design 3 Expressive
 
 ---
 
@@ -228,3 +233,4 @@ Para dúvidas, sugestões ou reportar bugs:
 - Comunidade Flutter por ferramentas e suporte
 
 ---
+
