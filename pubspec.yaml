@@ -41,6 +41,7 @@ dependencies:
   url_launcher: ^6.2.0
   dynamic_color: ^1.7.0
   m3e_core: ^0.0.3
+  loading_indicator_m3e: ^0.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:m3e_core/m3e_core.dart';
 import '../widgets/adaptive_bottom_nav_bar.dart';
 import '../widgets/pokemon_card.dart';
-import '../widgets/shimmer_pokemon_card.dart';
 import '../services/pokemon_service.dart';
 import '../models/pokemon.dart';
 import 'extras_page.dart';
@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
             actions: _categoryFilters
                 .map(
                   (category) => M3EToggleButtonGroupAction(
-                   // icon: Icon(category.icon, size: 18),
+                    // icon: Icon(category.icon, size: 18),
                     label: Text(
                       category.label,
                       style: GoogleFonts.poppins(
@@ -200,24 +200,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildLoadingIndicatorView(ColorScheme colorScheme) {
+    return CustomScrollView(
+      slivers: [
+        _buildCategorySelector(colorScheme),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const LoadingIndicatorM3E(
+                  variant: LoadingIndicatorM3EVariant.contained,
+                  constraints: BoxConstraints.tightFor(width: 72, height: 72),
+                  semanticLabel: 'Carregando pokemons',
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Carregando pokemons...',
+                  style: GoogleFonts.roboto(
+                    fontSize: 13,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildPokemonListPage() {
     final colorScheme = Theme.of(context).colorScheme;
     final filteredPokemons = _filteredPokemons;
 
     if (_isLoading) {
-      return GridView.builder(
-        padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.75,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemCount: 20,
-        itemBuilder: (context, index) {
-          return const ShimmerPokemonCard();
-        },
-      );
+      return _buildLoadingIndicatorView(colorScheme);
     }
 
     if (_errorMessage != null) {
@@ -259,19 +278,7 @@ class _HomePageState extends State<HomePage> {
         await _loadPokemons(isRefresh: true);
       },
       child: _isRefreshing
-          ? GridView.builder(
-              padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.75,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return const ShimmerPokemonCard();
-              },
-            )
+          ? _buildLoadingIndicatorView(colorScheme)
           : CustomScrollView(
               controller: _scrollController,
               slivers: [
