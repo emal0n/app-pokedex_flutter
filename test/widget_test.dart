@@ -11,20 +11,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pokedex/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Renderiza a splash screen inicial', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('POKÉDEX'), findsOneWidget);
+    expect(find.text('Explore o mundo Pokémon'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Avanca o timer de navegacao da splash para evitar timer pendente no fim do teste.
+    await tester.pump(const Duration(seconds: 4));
   });
 }

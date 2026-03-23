@@ -57,6 +57,8 @@ class PokemonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -73,7 +75,7 @@ class PokemonCard extends StatelessWidget {
               colors: [
                 _getTypeColor(pokemon.types.isNotEmpty ? pokemon.types[0] : 'normal')
                     .withValues(alpha: 0.15),
-                const Color(0xFF1E1E1E),
+                colorScheme.surfaceContainer,
               ],
             ),
           ),
@@ -87,7 +89,7 @@ class PokemonCard extends StatelessWidget {
                   '#${pokemon.id}',
                   style: GoogleFonts.roboto(
                     fontSize: 10,
-                    color: Colors.grey[400],
+                    color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -102,7 +104,7 @@ class PokemonCard extends StatelessWidget {
                       return Icon(
                         Icons.image_not_supported,
                         size: 80,
-                        color: Colors.grey[400],
+                        color: colorScheme.onSurfaceVariant,
                       );
                     },
                   )
@@ -110,7 +112,7 @@ class PokemonCard extends StatelessWidget {
                   Icon(
                     Icons.image_not_supported,
                     size: 80,
-                    color: Colors.grey[400],
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 const SizedBox(height: 4),
                 Flexible(
@@ -122,7 +124,7 @@ class PokemonCard extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),

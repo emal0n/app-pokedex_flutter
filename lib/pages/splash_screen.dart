@@ -67,6 +67,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -76,9 +78,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              const Color(0xFF1E1E1E),
-              Colors.red.withValues(alpha: 0.3),
-              const Color(0xFF1E1E1E),
+              colorScheme.surface,
+              colorScheme.primary.withValues(alpha: 0.32),
+              colorScheme.surface,
             ],
           ),
         ),
@@ -95,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   height: 200,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.1),
+                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
                   ),
                   child: Center(
                     child: Image.asset(
@@ -117,7 +119,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 style: GoogleFonts.poppins(
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: colorScheme.onSurface,
                   letterSpacing: 4,
                 ),
               ),
@@ -130,7 +132,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 'Explore o mundo Pokémon',
                 style: GoogleFonts.roboto(
                   fontSize: 14,
-                  color: Colors.grey[400],
+                  color: colorScheme.onSurfaceVariant,
                   letterSpacing: 1.5,
                 ),
               ),
@@ -139,11 +141,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             // Loading indicator
             FadeTransition(
               opacity: _fadeAnimation,
-              child: const SizedBox(
+              child:  SizedBox(
                 width: 40,
                 height: 40,
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onSurface),
                   strokeWidth: 3,
                 ),
               ),

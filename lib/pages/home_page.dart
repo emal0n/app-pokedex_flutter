@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/adaptive_bottom_nav_bar.dart';
 import '../widgets/pokemon_card.dart';
@@ -113,6 +112,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildPokemonListPage() {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (_isLoading) {
       return GridView.builder(
         padding: const EdgeInsets.all(8),
@@ -137,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             Icon(
               Icons.error_outline,
               size: 64,
-              color: Colors.red,
+              color: colorScheme.error,
             ),
             const SizedBox(height: 16),
             Text(
@@ -145,11 +146,11 @@ class _HomePageState extends State<HomePage> {
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 setState(() {
                   _isLoading = true;
@@ -224,14 +225,14 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           children: [
                             const CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              strokeCap: StrokeCap.round,
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'Carregando mais Pokémons...',
                               style: GoogleFonts.roboto(
                                 fontSize: 12,
-                                color: Colors.grey[400],
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -267,8 +268,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveScaffold(
-      appBar: AdaptiveAppBar(
+    return Scaffold(
+      appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(
@@ -281,7 +282,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: AdaptiveBottomNavBar(
         selectedIndex: _selectedIndex,
         onTap: _onItemTapped,
-      ).build(),
+      ),
     );
   }
 }

@@ -1,32 +1,31 @@
-import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 
-class AdaptiveBottomNavBar {
+class AdaptiveBottomNavBar extends StatelessWidget {
   final int selectedIndex;
-  final Function(int) onTap;
+  final ValueChanged<int> onTap;
 
   const AdaptiveBottomNavBar({
     required this.selectedIndex,
     required this.onTap,
   });
 
-  AdaptiveBottomNavigationBar build() {
-    return AdaptiveBottomNavigationBar(
-      items: const [
-        AdaptiveNavigationDestination(
-          icon: Icons.home,
-          label: "",
+  @override
+  Widget build(BuildContext context) {
+    return NavigationBar(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: onTap,
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home),
+          label: 'Inicio',
         ),
-        AdaptiveNavigationDestination(
-          icon: Icons.more_horiz,
-          label: "",
+        NavigationDestination(
+          icon: Icon(Icons.auto_awesome_outlined),
+          selectedIcon: Icon(Icons.auto_awesome),
+          label: 'Extras',
         ),
       ],
-      selectedIndex: selectedIndex,
-      onTap: onTap,
     );
   }
 }
-
-
-

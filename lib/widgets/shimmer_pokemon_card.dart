@@ -6,9 +6,11 @@ class ShimmerPokemonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Shimmer.fromColors(
-      baseColor: const Color(0xFF2A2A2A),
-      highlightColor: const Color(0xFF3A3A3A),
+      baseColor: colorScheme.surfaceContainer,
+      highlightColor: colorScheme.surfaceContainerHigh,
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -17,7 +19,7 @@ class ShimmerPokemonCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: const Color(0xFF1E1E1E),
+            color: colorScheme.surfaceContainer,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
