@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'home_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -141,13 +142,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             // Loading indicator
             FadeTransition(
               opacity: _fadeAnimation,
-              child:  SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onSurface),
-                  strokeWidth: 3,
-                ),
+              child: const LoadingIndicatorM3E(
+                variant: LoadingIndicatorM3EVariant.contained,
+                constraints: BoxConstraints.tightFor(width: 40, height: 40),
+                semanticLabel: 'Carregando aplicacao',
               ),
             ),
           ],

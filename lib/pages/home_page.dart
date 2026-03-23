@@ -343,19 +343,15 @@ class _HomePageState extends State<HomePage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2.2),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Carregando mais...',
-                            style: GoogleFonts.roboto(
-                              fontSize: 12,
-                              color: colorScheme.onSurface,
+                          const LoadingIndicatorM3E(
+                            variant: LoadingIndicatorM3EVariant.contained,
+                            constraints: BoxConstraints.tightFor(
+                              width: 18,
+                              height: 18,
                             ),
                           ),
+                          const SizedBox(width: 8),
+
                         ],
                       ),
                     ),

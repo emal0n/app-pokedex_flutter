@@ -359,7 +359,6 @@ class _ExtrasPageState extends State<ExtrasPage> with TickerProviderStateMixin {
                             height: 1.6,
                           ),
                         ),
-                        const SizedBox(height: 32),
                       ],
                     ),
                   ),
